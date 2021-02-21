@@ -6,7 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Plato extends Model
 {
+
+    protected $fillable=["id","nombre","descripcion","nivel","precio","foto","categoria_comida_id","categoria_horaria_id","region_id"];
+
     protected $table = 'platos';
+    public $timestamps = false;
 
     public function region()
     {

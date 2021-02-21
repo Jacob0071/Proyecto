@@ -26,6 +26,12 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+
+Route::resource('/platos', 'PlatosController');
+
+
+
+
 Route::get('/region', function(){
     foreach ( Region::all() as $region) {
         echo $region->id; echo "<br>";
@@ -61,7 +67,7 @@ Route::get('/datos', function(){
 });
 
 
-Route::get('/platos', function(){
+/*Route::get('/platos', function(){
     $platos = Region::find(2)->platos;
 
     foreach ($platos as $plato) {
@@ -71,7 +77,7 @@ Route::get('/platos', function(){
         echo $plato->precio . "<br>";
         echo $plato->region_id . "<br>";
     }
-});
+});*/
 
 //Cuales son los datos(ingredientes) del plato con id 2
 Route::get('/ingredientes',function(){
