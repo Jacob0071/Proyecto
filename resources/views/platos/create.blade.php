@@ -1,12 +1,11 @@
 @extends("../Layouts.plantilla")
 
-@section("header")
-	Vista Principal para los Platos
-@endsection	
+<title>Agregar Plato</title>
 
 @section("body")
     {!! Form::open(['url' => '/platos','method' => 'post','files' => true]) !!}	
-        <table>
+    <h1>Agregar Plato</h1>
+        <table id="agregar_plato_table" class="table table-bordered">
             <tr>
                 <td>{!!Form::label('id', 'Id:')!!}</td>
                 <td>
@@ -43,24 +42,42 @@
                 </td>
             </tr>
             <tr>
-                <td>{!!Form::label('categoria_comida_id', 'Categoria de Comida:')!!}</td>
+            <td>Categoria Comida:</td>
+            <td>
+
+            <select name="categoria_comida_id" id="developers">
+                <option value="">Categoria Comida</option>
+                @foreach($categoria_comida as $categoria)
+                <option value="{{ $categoria->id }}">{{ $categoria->nombre }}</option>
+                @endforeach
+            </select>
+            
+            {{csrf_field()}}	
+            </td>
+            </tr>
+            
+            <tr>
+                <td>Categoria Horaria:</td>
                 <td>
-                    {!!Form::text('categoria_comida_id')!!}
-                    {{csrf_field()}}
+                <select name="categoria_horaria_id" id="developers">
+                    <option value="">Categoria Horaria</option>
+                    @foreach($categoria_horaria as $categoria)
+                    <option value="{{ $categoria->id }}">{{ $categoria->nombre }}</option>
+                    @endforeach
+                </select>
+                {{csrf_field()}}
                 </td>
             </tr>
             <tr>
-                <td>{!!Form::label('categoria_horaria_id', 'Categoria Horaria:')!!}</td>
+                <td>Region:</td>
                 <td>
-                    {!!Form::text('categoria_horaria_id')!!}
-                    {{csrf_field()}}
-                </td>
-            </tr>
-            <tr>
-                <td>{!!Form::label('region', 'Region:')!!}</td>
-                <td>
-                    {!!Form::text('region_id')!!}
-                    {{csrf_field()}}
+                <select name="region_id" id="developers">
+                    <option value="">  Region</option>
+                    @foreach($regiones as $region)
+                    <option value="{{ $region->id }}">{{ $region->nombre }}</option>
+                    @endforeach
+                </select>
+                {{csrf_field()}}
                 </td>
             </tr>
             <tr>
@@ -72,7 +89,7 @@
                 </td>
             </tr>
         </table>
-        <table>
+        <table id="boton_imagen">
             <tr>
                 <td>
                     {!!Form::file('file')!!}

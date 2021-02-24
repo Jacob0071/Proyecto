@@ -1,5 +1,7 @@
 @extends("../Layouts.plantilla")
 
+<title>Editar Plato</title>
+
 @section("header")
 	Vista para editar los Platos
 @endsection	
@@ -7,8 +9,8 @@
 @section("body")	
 
 {!!Form::model($plato,['method'=>'POST','action'=>['PlatosController@update',$plato->id]])!!}  
-        <table>
-        
+        <h1>Modificar plato</h1>
+        <table id="editar_platos_table" class="table table-bordered" >
             <tr>
                 <td>Id:</td>
                 <td>
@@ -79,7 +81,7 @@
     {!!Form::open(['method'=>'DELETE','action'=>['PlatosController@destroy',$plato->id]])!!}
 		{{csrf_field()}}	
 		<input type="hidden" name="_method" value="DELETE">
-		<input type="submit" name="" value="Eliminar">
+		<input id="boton_eliminar_plato" type="submit" name="" value="Eliminar">
     {!! Form::close()!!}
 @endsection	
 

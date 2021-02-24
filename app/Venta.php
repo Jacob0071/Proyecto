@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Venta extends Model
 {
+    protected $fillable=["id","fecha"];
     protected $table = 'ventas';
     public $timestamps = false;
 

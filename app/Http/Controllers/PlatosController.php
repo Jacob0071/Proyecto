@@ -6,6 +6,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Plato;
+use App\Categoria_Comida;
+use App\Categoria_Horario;
+use App\Region;
 
 class PlatosController extends Controller
 {
@@ -27,7 +30,10 @@ class PlatosController extends Controller
      */
     public function create()
     {
-        return view("platos.create");
+        $categoria_horaria = Categoria_Horario::all();
+        $categoria_comida = Categoria_Comida::all();
+        $regiones = Region::all();
+        return view("platos.create", compact("categoria_comida","categoria_horaria","regiones"));
     }
 
     /**

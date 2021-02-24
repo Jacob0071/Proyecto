@@ -1,7 +1,6 @@
 
 <?php
 
-
 use App\Region;
 use App\Categoria_Horario;
 use App\Categoria_Comida;
@@ -9,7 +8,7 @@ use App\Plato;
 use App\Dato;
 use App\Carta;
 use App\Venta;
-
+use App\Plato_Venta;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,88 +22,93 @@ use App\Venta;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('main');
 });
 
+Route::get('/consultas', function(){
+    return view("platos.consultas");
+});
+
+Route::get('/consulta_regiones', function(){
+    return view("platos.consulta_regiones");
+});
+
+Route::get('/consulta_categorias', function(){
+    return view("platos.consulta_categorias");
+});
 
 Route::resource('/platos', 'PlatosController');
+Route::resource('/cartas', 'CartasController');
+Route::resource('/ventas', 'VentasController');
+Route::resource('/cartas_platos', 'CartasPlatosController');
+Route::resource('/platos_ventas', 'PlatosVentasController');
+Route::get('/consultar_menu','CartasPlatosController@menu');
+Route::resource('/datos_platos', 'DatosPlatosController');
+Route::resource('/regiones', 'RegionesController');
 
+/////////////////////////DEFINITIVAS///////////////////////
 
+Route::get('/consultar_menu','CartasPlatosController@menu');
 
+Route::get('/consultar_ingredientes/{id}','DatosPlatosController@ingredientes');
 
-Route::get('/region', function(){
-    foreach ( Region::all() as $region) {
-        echo $region->id; echo "<br>";
-        echo $region->nombre; echo "<br>";
-        echo $region->nombre_encargado; echo "<br>";
+Route::get('/platos_region/{id}','RegionesController@platos');
+
+Route::get('/platos_venta/{id}','VentasController@platos');
+
+Route::get('/nueva_prueba/{fecha_inicio}/{fecha_final}/{region_id}',function($fecha_inicio,$fecha_final,$region_id){
+    $professions = DB::select(
+        "SELECT sum(cantidad) as suma from plato_venta where plato_id IN 
+    (SELECT id from platos where region_id=$region_id) AND venta_id IN 
+    (select id from ventas where fecha BETWEEN '$fecha_inicio' AND '$fecha_final')");
+    foreach($professions as $profession){
+        foreach ($profession as $key => $suma){            
+            $nuevo = $suma;
+        }
     }
-    
-});
-
-Route::get('/horarios', function(){
-    foreach (Categoria_Horario::all() as $horario) {
-        echo $horario->id; echo "<br>";
-        echo $horario->nombre; echo "<br>";
-        
-    }  
-});
-
-Route::get('/comidas', function(){
-    foreach (Categoria_Comida::all() as $comida) {
-        echo $comida->id; echo "<br>";
-        echo $comida->nombre; echo "<br>";
-        
-    } 
+    return view ("regiones.consulta", compact("nuevo"));
 });
 
 
-Route::get('/datos', function(){
-    foreach (Dato::all() as $dato) {
-        echo $dato->id; echo "<br>";
-        echo $dato->nombre; echo "<br>";
-        
-    }  
-});
-
-
-/*Route::get('/platos', function(){
-    $platos = Region::find(2)->platos;
-
-    foreach ($platos as $plato) {
-        echo $plato->id . "<br>";
-        echo $plato->nombre . "<br>";
-        echo $plato->nivel . "<br>";
-        echo $plato->precio . "<br>";
-        echo $plato->region_id . "<br>";
+Route::get('/consulta_horaria/{fecha_inicio}/{fecha_final}/{categoria_horaria_id}',function($fecha_inicio,$fecha_final,$categoria_horaria_id){
+    $professions = DB::select(
+        "SELECT sum(cantidad) as suma from plato_venta where plato_id IN 
+    (SELECT id from platos where categoria_horaria_id=$categoria_horaria_id) AND venta_id IN 
+    (select id from ventas where fecha BETWEEN '$fecha_inicio' AND '$fecha_final')");
+    foreach($professions as $profession){
+        foreach ($profession as $key => $suma){            
+            $nuevo = $suma;
+        }
     }
-});*/
-
-//Cuales son los datos(ingredientes) del plato con id 2
-Route::get('/ingredientes',function(){
-    $plato = Plato::find(2);
-
-    foreach ($plato->datos as $dato) {
-        echo $dato->id . "<br>";
-        echo $dato->nombre. "<br>";
-    }
+    return view ("platos.consulta", compact("nuevo"));
 });
 
-//Ejemplo, cuales son los platos de la carta con id 1
-Route::get('/menu',function(){
-    $carta = Carta::find(1);
-
-    foreach ($carta->platos as $plato) {
-        echo $plato->id . "<br>";
-        echo $plato->nombre. "<br>";
+Route::get('cantidad/{fecha_inicio}/{fecha_final}',function($fecha_inicio,$fecha_final){
+    $professions = DB::select("SELECT sum(cantidad) from plato_venta pv, ventas v , platos p where v.id =pv.venta_id AND pv.plato_id=p.id AND pv.venta_id IN (select id from ventas where fecha BETWEEN '$fecha_inicio' AND '$fecha_final');");
+    foreach($professions as $profession){
+        foreach ($profession as $key => $suma){            
+            $nuevo = $suma;
+        }
     }
+    return view ("platos.consulta_cantidad", compact("nuevo"));
 });
 
-//Cuales son los platos de la venta con id 1
-Route::get('/venta',function(){
-    $venta = Venta::find(1);
-
-    foreach ($venta->platos as $plato) {
-        echo $plato->id . "<br>";
-        echo $plato->nombre. "<br>";
+Route::get('dinero/{fecha_inicio}/{fecha_final}',function($fecha_inicio,$fecha_final){    
+    $professions = DB::select("SELECT sum(cantidad*precio) from plato_venta pv, ventas v , platos p where v.id =pv.venta_id AND pv.plato_id=p.id AND pv.venta_id IN (select id from ventas where fecha BETWEEN '$fecha_inicio' AND '$fecha_final');");
+    foreach($professions as $profession){
+        foreach ($profession as $key => $suma){            
+            $nuevo = $suma;
+        }
     }
+    return view ("platos.consulta_dinero", compact("nuevo"));
 });
+
+
+Route::get('/crear_consulta',function(){
+    return view('regiones.crear');
+});
+
+
+
+
+
